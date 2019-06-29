@@ -12,6 +12,9 @@ pytest = "*"
 [packages]
 requests-html = "*"
 requests = "*"
+beautifulsoup4 = "*"
+click = "*"
+pprint = "*"
 
 [requires]
 python_version = "3.7"
