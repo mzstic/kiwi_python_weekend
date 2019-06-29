@@ -7,9 +7,10 @@ from requests_html import HTMLSession
 @click.option('--source', help='Source destination i.e. Praha')
 @click.option('--destination', help='Target destination i.e. Brno')
 @click.option('--departure_date', help='Date when you want to leave i.e. 2019-06-30')
-def find_connections(source, destination, departure_date):
+@click.option('--lang', default="cs", help='Language to use for destinations.')
+def find_connections(source, destination, departure_date, lang):
     try:
-        j = Journeys(Destinations("cs"))
+        j = Journeys(Destinations(lang))
         journeys = j.get_journeys(departure_date, from_name=source, to_name=destination)
         pp = PrettyPrinter()
         pp.pprint(journeys)
