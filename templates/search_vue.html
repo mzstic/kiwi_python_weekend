@@ -1,0 +1,76 @@
+
+<html>
+    <head>
+        <title>{{ source }} -> {{ destination }} on {{ date_from }}</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+
+
+        <div id="vue-app">
+            <table>
+                <tr><th>Source:</th><td><input type="text" v-model="source"/></td></tr>
+                <tr><th>Destination:</th><td><input type="text" v-model="destination" /></td></tr>
+                <tr><th>Date from:</th><td><input type="text" v-model="date_from" /></td></tr>
+                <tr><th>Date to:</th><td><input type="text" v-model="date_to" /></td></tr>
+                <tr><th>Passengers:</th><td><input type="text" v-model="count" /></td></tr>
+                <tr><td rowspan="2"><button type="submit" v-on:click="loadJourneys">Search</button></td></tr>
+            </table>
+
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>source</th>
+                        <th>destination</th>
+                        <th>departure</th>
+                        <th>carrier</th>
+                        <th>type</th>
+                        <th>free seats</th>
+                        <th>price</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% raw %}
+                    <tr v-for="journey in journeys">
+                        <td>{{ journey.source }}</td>
+                        <td>{{ journey.destination }}</td>
+                        <td>{{ journey.departure_datetime }}</td>
+                        <td>
+                            {{ journey.carrier }}
+                        </td>
+                        <td>{{ journey.type }}</td>
+                        <td>{{ journey.free_seats }}</td>
+                        <td>{{ journey.price }}</td>
+                    </tr>
+                {% endraw %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <script>
+var app2 = new Vue({
+  el: '#vue-app',
+  data: {
+    message: 'You loaded this page on ' + new Date().toLocaleString(),
+    destination: 'Brno',
+    source: 'Praha',
+    date_from: '2019-07-01',
+    date_to: '2019-07-15',
+    count: 1,
+    journeys: []
+  },
+  methods: {
+    loadJourneys: function() {
+      axios.get('/search/' + this.source + '/' + this.destination + '/' + this.date_from + '/' + this.date_to + '/' + this.count)
+        .then(response => {this.journeys = response.data.journeys})
+    }
+  }
+})
+
+        </script>
+    </body>
+</html>

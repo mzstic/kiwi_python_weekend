@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <title>{{ source }} -> {{ destination }} on {{ date_from }}</title>
+
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    </head>
+    <body>
+        <form action="{{ url_for('search') }}" method="post">
+            <table>
+                <tr><th>{{ form.source.label }}:</th><td>{{ form.source(size=20) }}</td></tr>
+                <tr><th>{{ form.destination.label }}:</th><td>{{ form.destination(size=20) }}</td></tr>
+                <tr><th>{{ form.date_from.label }}:</th><td>{{ form.date_from(size=20) }}</td></tr>
+                <tr><th>{{ form.date_to.label }}:</th><td>{{ form.date_to(size=20) }}</td></tr>
+                <tr><th>{{ form.count.label }}:</th><td>{{ form.count(size=2) }}</td></tr>
+                <tr><td rowspan="2"><input type="submit" value="Search"></td></tr>
+            </table>
+ 		</form>
+
+        <p>
+            List of journeys <strong>{{ source }}</strong> -> <strong>{{ destination }}</strong> for date <strong>{{ date_from }}</strong> - <strong>{{ date_to }}</strong>
+        </p>
+
+		<table>
+            <thead>
+                <tr>
+                    <th>source</th>
+                    <th>destination</th>
+                    <th>departure</th>
+                    <th>carrier</th>
+                    <th>type</th>
+                    <th>free seats</th>
+                    <th>price</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for journey in journeys %}
+
+                <tr style="{% if journey.free_seats < count %}color: gray;{% endif %}">
+                    <td>{{ journey["source"] }}</td>
+                    <td>{{ journey["destination"] }}</td>
+                    <td>{{ journey["departure_datetime"] }}</td>
+                    <td>
+                        {% if journey.carrier == "regiojet" %}
+                            <img src="https://www.regiojet.cz/sys/images/header-logo-small.svg" alt="Regiojet" title="Regiojet" />
+                        {% else %}
+                            {{ journey.carrier }}
+                        {% endif %}
+                    </td>
+                    <td>{{ journey.type }}</td>
+                    <td>{{ journey.free_seats }}</td>
+                    <td>{{ journey.price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <script>
+            $(function(){
+                $("#date_from").datepicker({dateFormat: "yy-mm-dd"});
+            });
+
+            $(function(){
+                $("#date_to").datepicker({dateFormat: "yy-mm-dd"});
+            });
+
+            $(function(){
+                $("#source").autocomplete({source: "/whisperer", minLength: 2});
+            });
+
+            $(function(){
+                $("#destination").autocomplete({source: "/whisperer", minLength: 2});
+            });
+
+        </script>
+
+    </body>
+</html>
